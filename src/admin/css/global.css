@@ -1,0 +1,709 @@
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+
+* {
+    box-sizing: border-box;
+    /* margin: 0; */
+    /* padding: 0; */
+    /* font-family: "Inter", sans-serif; */
+}
+body {
+    font-family: "Inter", sans-serif;
+}
+:root {
+    --color-primary: #1a1a1a;
+    --nav-bg: rgb(235 235 235);
+    --nav-bg-2: rgb(241 241 241);
+    --text-color: rgb(181 181 181);
+    --nav-text-color: rgb(48 48 48);
+    --right-shadow: -0.0625rem 0 0 0 rgba(0, 0, 0, 0.13) inset;
+    --left-shadow: 0.0625rem 0 0 0 rgba(0, 0, 0, 0.13) inset;
+    --top-shadow: 0 0.0625rem 0 0 rgba(204, 204, 204, 0.5) inset;
+    --bottom-shadow: 0 -0.0625rem 0 0 rgba(0, 0, 0, 0.17) inset;
+    --highlight-shadow: 0 1.125rem 1rem 0 rgba(26, 26, 26, 0.22);
+    --main-font-family: "Inter", sans-serif;
+}
+#sidebar {
+    transition: transform 300ms ease-in-out;
+}
+#content {
+    padding-left: 270px;
+    padding-top: 50px;
+}
+.body-shrink {
+    width: calc(100% - 270px);
+    transition: width 300ms ease-in-out;
+}
+.sub-menu {
+    display: none;
+}
+.menu-item {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.tox-tinymce {
+    width: 100% !important;
+}
+.browse-sec-button {
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+        rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+}
+.select2-container--default .select2-selection--single {
+    height: 50px !important;
+    display: flex !important;
+    align-items: center !important;
+}
+.ck.ck-editor {
+    max-width: 100% !important;
+    position: relative;
+    overflow: hidden !important;
+    width: 100% !important;
+}
+.select2-container--default
+    .select2-selection--single
+    .select2-selection__arrow {
+    position: relative;
+    width: 16px;
+    height: 16px;
+}
+
+.select2-container--default
+    .select2-selection--single
+    .select2-selection__arrow
+    b {
+    display: block;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.select2-container--default
+    .select2-selection--single
+    .select2-selection__arrow
+    b::before,
+.select2-container--default
+    .select2-selection--single
+    .select2-selection__arrow
+    b::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border-style: solid;
+    border-width: 5px 4px 0 4px;
+    border-color: #888 transparent transparent transparent;
+    width: 0;
+    height: 0;
+}
+
+.select2-container--default
+    .select2-selection--single
+    .select2-selection__arrow
+    b::before {
+    top: 6px;
+}
+
+.select2-container--default
+    .select2-selection--single
+    .select2-selection__arrow
+    b::after {
+    top: -6px;
+    transform: translateX(-50%) rotate(180deg) !important;
+}
+.select2-container--default
+    .select2-selection--single
+    .select2-selection__arrow
+    b {
+    border-color: transparent transparent transparent transparent !important;
+}
+.product-search .select2-container {
+    width: 100% !important;
+}
+
+.product-search
+    .select2-container--default
+    .select2-selection--single
+    .select2-selection__arrow {
+    display: none;
+}
+.add-image-button {
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+        rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+}
+#imageModal {
+    z-index: 9999; /* Ensure it's above all elements */
+}
+
+#closeModal {
+    z-index: 10000; /* Keep close button above everything */
+}
+/* Grid View */
+/* Grid View */
+.grid-view {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.grid-view .image-container {
+    width: 70px;
+    height: 70px;
+    text-align: center;
+    position: relative;
+}
+
+/* List View */
+.list-view {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Image Styling */
+.preview-img {
+    width: 70px;
+    height: 70px;
+    border-radius: 5px;
+    object-fit: cover;
+}
+
+/* View Icon Styling (Only Visible in Grid View) */
+.view-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    font-size: 12px;
+    cursor: pointer;
+}
+
+/* Checkbox Styling */
+.file-checkbox {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+}
+/* Grid View */
+.grid-view .image-container {
+    position: relative;
+    background: transparent;
+    padding: 5px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.grid-view .view-icon {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+}
+
+/* List View */
+.list-view .image-container {
+    display: flex;
+    align-items: center; /* Center all items */
+    justify-content: space-between; /* Even spacing */
+    background-color: transparent;
+    padding: 10px;
+    margin-bottom: 8px;
+    width: 100%;
+    gap: 15px;
+}
+
+.list-view .file-checkbox {
+    width: 16px;
+    height: 16px;
+    margin-right: 10px;
+}
+
+.list-view .preview-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 5px;
+    object-fit: cover;
+}
+
+.list-view .file-info {
+    display: flex;
+    flex-direction: row;
+    gap: 20px; /* Space between file name, size, upload time, and description */
+    flex-grow: 1;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Apply uniform styling for text in list view */
+.list-view .file-info p {
+    font-size: 13px; /* Exact match with sample image text */
+    color: #3a3a3a; /* Sample text color */
+    font-weight: 500; /* Slightly bold like sample */
+    font-family: "Inter", sans-serif; /* Use the same font */
+    letter-spacing: 0.3px; /* Improves readability */
+}
+
+/* Description & Upload Time - Slightly lighter */
+.list-view .file-info .text-gray-400 {
+    font-size: 12px;
+    color: #6a6a6a; /* Softer gray for secondary info */
+    font-style: italic;
+}
+
+/* List View Alignment - Keeps all elements in a single row */
+.list-view .file-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px; /* Even spacing */
+    width: 100%;
+}
+
+/* Remove box shadow & set transparent background for list view */
+.list-view .image-container {
+    background: transparent;
+    box-shadow: none;
+    border: none;
+}
+
+/* Grid View - Position Eye Icon to Bottom Right */
+.grid-view .image-container {
+    position: relative;
+}
+
+.grid-view .view-icon {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 4px;
+    border-radius: 50%;
+}
+/* Modal content body */
+/* Modal body that contains the main content */
+.main-modal-body-1 {
+    transition: width 0.3s ease; /* Smooth transition for width adjustment */
+    width: 100%;
+    position: relative;
+}
+
+/* Hide the sidebar by default */
+#sidebarNew {
+    width: 300px;
+    visibility: hidden;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.9); /* Added slight transparency */
+    z-index: 1000;
+    transition: width 0.3s ease-in-out, visibility 0s linear 0.3s; /* delay visibility change */
+    overflow: auto; /* Prevent content overflow */
+    padding: 20px;
+}
+
+/* When sidebar is open */
+#sidebarNew.open {
+    width: 300px; /* Adjust the width of your sidebar */
+    visibility: visible;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Sidebar image styling */
+#sidebarImage {
+    width: auto;
+    height: 200px;
+    border-radius: 8px;
+    object-fit: cover;
+    margin: 0 auto; /* Ensure the image fits properly inside the sidebar */
+    margin-bottom: 20px;
+}
+
+/* Squeeze the main modal body when sidebar is open */
+.main-modal-body-1.squeezed {
+    width: calc(
+        100% - 300px
+    ); /* Reduce width of modal body when sidebar is open */
+    transition: width 0.3s ease-in-out;
+}
+
+/* Ensure the modal body is not squeezed initially */
+.main-modal-body-1 {
+    width: 100%;
+    transition: width 0.3s ease-in-out;
+}
+
+/* Close button inside the sidebar */
+#closeSidebar {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #333;
+    cursor: pointer;
+    padding: 5px;
+}
+#closeSidebar:hover {
+    color: red;
+}
+#imageName,
+#imageSize,
+#uploadTime {
+    font-size: 13px; /* Exact match with sample image text */
+    color: #3a3a3a; /* Sample text color */
+    font-weight: 400; /* Slightly bold like sample */
+    font-family: inherit; /* Use the same font */
+    letter-spacing: 0.3px; /* Improves readability */
+}
+#imageDetails p strong {
+    font-size: 13px; /* Exact match with sample image text */
+    color: #3a3a3a; /* Sample text color */
+    font-weight: 600; /* Slightly bold like sample */
+    font-family: inherit; /* Use the same font */
+    letter-spacing: 0.3px; /* Improves readability */
+}
+#selectedImagesPreview img {
+    width: 200px;
+    height: auto;
+    object-fit: cover;
+    border-radius: 8px;
+    margin: 0 auto;
+}
+/* Slider Container */
+/* Slider Container */
+#imageSlider {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    overflow: hidden;
+    width: 100%;
+}
+
+/* Each image will have some styling */
+#imageSlider img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 10px;
+}
+
+/* Navigation buttons */
+button {
+    cursor: pointer;
+}
+
+#prevBtn,
+#nextBtn {
+    background-color: #ffffff91;
+    border: none;
+    font-size: 16px;
+    opacity: 0;
+    cursor: pointer;
+    transition: opacity 0.3s ease-in-out;
+}
+
+#imageSlider:hover #prevBtn,
+#imageSlider:hover #nextBtn {
+    opacity: 1;
+}
+
+.slider-container {
+    position: relative;
+    width: 100%;
+    max-width: 500px; /* Adjust the max width as needed */
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.slider-track {
+    display: flex;
+    transition: transform 0.3s ease;
+}
+
+.slider-track img {
+    width: 100%;
+    object-fit: cover;
+    height: 300px; /* Adjust the height as needed */
+}
+
+.slider-prev,
+.slider-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.slider-prev {
+    left: 10px;
+}
+
+.slider-next {
+    right: 10px;
+}
+#altPrevBtn,
+#altNextBtn {
+    opacity: 0;
+    cursor: pointer;
+    transition: opacity 0.3s ease-in-out;
+}
+.image-show-section:hover #altPrevBtn,
+.image-show-section:hover #altNextBtn {
+    opacity: 1;
+}
+
+.tab-link-list {
+    width: fit-content;
+}
+.tab-link-list li button {
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+}
+/* New active tab style */
+.tab-link-list li button[aria-selected="true"] {
+    background-color: #cccccc;
+    color: #303030;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+}
+
+.tab-content select::-ms-expand {
+    display: none;
+}
+
+.tab-content select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+/* Custom checkbox styling */
+.custom-checkbox.section {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 17px;
+    height: 17px;
+    border: 1px solid #303030;
+    border-radius: 4px;
+    position: relative;
+    cursor: pointer;
+    background-color: #fff;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.custom-checkbox.section:checked {
+    background-color: #000;
+    border-color: #000;
+}
+
+.custom-checkbox.section:checked::before {
+    content: "✓";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    font-size: 12px;
+    color: #fff;
+    text-align: center;
+    line-height: 15px;
+}
+.submit-search-button {
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+}
+.button-shadow {
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+        rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+}
+.custom-radio-black {
+    appearance: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 1px solid black;
+    border-radius: 50%;
+    position: relative;
+    cursor: pointer;
+    background: #fff;
+}
+
+.custom-radio-black:checked::before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    background-color: #fff;
+    background: #000;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+/* datatables */
+.dataTables_wrapper .dataTables_length {
+    margin-bottom: 20px !important;
+}
+.dataTables_wrapper .dataTables_filter {
+    margin-bottom: 20px !important;
+}
+table.dataTable tbody tr {
+    background-color: #fff !important;
+}
+
+.error-border {
+    border: 1px solid red !important;
+    background-color: #ffe6e6 !important;
+}
+
+.hidden {
+    display: none;
+}
+
+/* product-page-changes */
+.rotate-180 {
+    transform: rotate(180deg);
+    transition: transform 0.2s ease;
+}
+
+/* order-page */
+.top-box-shadow {
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+.shadow-sm-custom {
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+        rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+}
+
+.timeline-sec_1 {
+    display: block !important;
+    margin-left: 0;
+    padding-left: 0;
+}
+
+.timeline-sec_1 .timeline-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #000 !important;
+    position: relative;
+}
+
+.timeline-sec_1 li {
+    position: relative;
+}
+.timeline-sec_1 li:before {
+    position: absolute;
+    content: "";
+    width: 0.2rem;
+    height: 100%;
+    background-color: #ddddddcb;
+    top: 0;
+    left: 6px;
+    z-index: 0;
+}
+
+.timeline-sec_1 .timeline li:first-child:before {
+    top: 50%;
+    height: 50%;
+}
+
+.timeline-sec_1 .timeline li:last-child:before {
+    bottom: 50%;
+    height: 50%;
+}
+.timeline-sec_1 .timeline-title {
+    margin-bottom: 0.5rem;
+}
+.timeline-sec_1 .circle-custom {
+    font-size: 1rem !important;
+}
+
+.timeline-sec_1 .subcard {
+    padding: 1em 1.5em 1.5em 1.5em;
+    background: transparent;
+    color: black;
+    width: -webkit-fill-available;
+    min-height: 3.3rem;
+}
+
+.trigger-btn {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    background-color: white;
+  }
+
+  .litepicker {
+    z-index: 9999 !important;
+  }
+
+  .inline-input {
+    margin: 12px 12px 0 12px;
+    padding: 6px 10px;
+    font-size: 13px;
+    border: 1px solid #ccc;
+    width: calc(100% - 24px);
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+
+  .icon-rotation{
+    transform: rotate(90deg);
+  }
+
+  .slide-up {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+}
+.slide-down {
+    max-height: 100%;
+    opacity: 1;
+    transition: all 0.3s ease-in-out;
+}
+
+
+.calendar-modal {
+    animation: fadeIn 0.2s ease-in-out;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  #calendarModal {
+    overflow-y: auto;
+    padding: 1rem;
+  }
+  .ck.ck-editor__editable_inline {
+    height: 200px !important;
+    overflow-y: auto !important;
+}
+
+.blog-sec-image_001{
+    width: fit-content;
+    height: 100%;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+.blog-sec-image_001 i.eye-icon{
+    opacity: 0;
+}
+.blog-sec-image_001:hover i.eye-icon{
+    opacity: 1;
+}
+.shadow-new{
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
