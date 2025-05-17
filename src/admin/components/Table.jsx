@@ -76,7 +76,7 @@ const Table = ({
     // { field: "vendor" }
   ].filter(Boolean));
   return (
-    <div className={"w-full min-h-125"}>
+    <div className={"w-full"}>
       <AgGridReact
         rowData={data}
         columnDefs={colDefs}

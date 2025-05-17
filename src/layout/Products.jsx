@@ -1,11 +1,15 @@
 "use client";
+import useFetch from "@/admin/hooks/useFetch";
 import ProductCard from "@/components/ProductCard";
 import { PRODUCTS_DATA } from "@/utils/JsonData";
 import Link from "next/link";
 import React, { useState } from "react";
 
 const Products = () => {
-  const [products, setProducts] = useState(PRODUCTS_DATA);
+  const { data: products, loading, refetch } = useFetch("/products");
+  // const [products, setProducts] = useState(PRODUCTS_DATA);
+  console.log(products, "products");
+
   return (
     <section className="flat-spacing-3">
       <div className="container">
@@ -17,9 +21,10 @@ const Products = () => {
         </div>
         <div className="tf-grid-layout tf-col-2 lg-col-3 xl-col-4">
           {/* <!-- card product 1 --> */}
-          {products.map((product, index) => {
-            return <ProductCard key={index} data={product} />;
-          })}
+          {!loading &&
+            products.map((product, index) => {
+              return <ProductCard key={index} data={product} />;
+            })}
         </div>
         <div className="sec-btn text-center">
           <Link href="/shop" className="btn-line">

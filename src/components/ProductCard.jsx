@@ -12,8 +12,8 @@ const ProductCard = ({ data, ...props }) => {
     useQuickView();
   const { setOpen: setOpenCompare, setCompareData } = useCompare();
   const { setOpen: setOpenWishlist, setWishlistData } = useWishlist();
-  const firstImage = data?.images?.[0] || null;
-  const hoverImage = data?.images?.[1] || firstImage;
+  const firstImage = data?.media?.[0].full_path || null;
+  const hoverImage = data?.media?.[1].full_path || firstImage;
   let discountedAmount = 0;
   if (data.discount) {
     discountedAmount =

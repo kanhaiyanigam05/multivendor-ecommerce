@@ -5,7 +5,7 @@ import Link from "next/link";
 import React, { useState } from "react";
 
 const DiscountsList = () => {
-  const [showModal, setShowModal] = useState(true);
+  const [showModal, setShowModal] = useState(false);
   return (
     <section
       className="main-body-wrapper ml-0 p-6 transition-all duration-300 bg-[#f1f1f1] h-[100%]"

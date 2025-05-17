@@ -16,12 +16,24 @@ const SearchableModal = ({
   search = "",
   onSearch = () => {},
 }) => {
-  const [selectedProducts, setSelectedProducts] = useState(value || []);
+  const [selectedProducts, setSelectedProducts] = useState([]);
   const [productFilter, setProductFilter] = useState(items || []);
   const [sortOption, setSortOption] = useState("manual");
 
   useEffect(() => {
-    setSelectedProducts(value);
+    setSelectedProducts(
+        type === "product-inventories" ? (
+            value.map((p) => ({ id: p.id, inventories: p.inventories.map((i) => i.id) })) || []
+        ) : type === "product" ? (
+            value.map(p => {
+              const product = items.find(i => i.id === p);
+              return {
+                id: p,
+                inventories: product ? product.inventories.map(inv => inv.id) : []
+              };
+            })
+  ) : (value || [])
+    );
   }, [value]);
 
   useEffect(() => {

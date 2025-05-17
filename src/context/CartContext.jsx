@@ -3,7 +3,7 @@ import React, { createContext, useReducer, useEffect } from "react";
 
 // Define initial state
 const initialState = {
-  items: JSON.parse(localStorage.getItem("cartItems")) || [], // Load cart items from localStorage if available
+  items: JSON.parse(localStorage.getItem("cartItems")) || [],
 };
 
 // Reducer function to handle cart actions

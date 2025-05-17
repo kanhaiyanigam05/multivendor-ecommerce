@@ -10,6 +10,7 @@ import useForm from "@/admin/hooks/useForm";
 import Link from "next/link";
 import useFetch from "@/admin/hooks/useFetch";
 import VariantSection from "@/admin/components/variants/VariantSection";
+import {slugify} from "@/utils/utilities";
 
 const ProductCreate = () => {
   const [activeCategory, setActiveCategory] = useState(null);

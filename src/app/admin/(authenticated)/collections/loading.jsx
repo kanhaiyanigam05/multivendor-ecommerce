@@ -2,8 +2,8 @@
 import Loader from "@/admin/components/Loader";
 import React from "react";
 
-const loading = () => {
+const CollectionLoading = () => {
   return <Loader />;
 };
 
-export default loading;
+export default CollectionLoading;

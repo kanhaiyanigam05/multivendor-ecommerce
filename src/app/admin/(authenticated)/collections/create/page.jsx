@@ -12,6 +12,7 @@ import SearchableModal from "@/admin/components/SearchableModal";
 import { slugify } from "@/utils/utilities";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import Conditions from "@/admin/components/conditions/Conditions";
 
 const CollectionsCreate = () => {
   const { data, setData, post, errors, processing, reset, success } = useForm({
@@ -20,7 +21,7 @@ const CollectionsCreate = () => {
     type: "manual",
     products: [],
     match: "all",
-    conditions: [{}],
+    conditions: [],
     meta_title: "",
     meta_description: "",
     meta_keywords: "",
@@ -31,21 +32,12 @@ const CollectionsCreate = () => {
   const {
     data: products,
     loading: productsLoading,
-    refetch,
   } = useFetch("/admin/products");
+  const { data: columns, loading: columnsLoading } = useFetch("/admin/conditions");
+  console.log('columns', columns);
   const [isOpen, setOpen] = useState(false);
   const [openMeta, setOpenMeta] = useState(false);
-  const [selectedProducts, setSelectedProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  useEffect(() => {
-    if (!products) return;
-    const productIds = products.map((product) => product.id);
-
-    const selectedProductIds = productIds.filter((id) =>
-      selectedProducts.includes(id)
-    );
-    setData("products", selectedProductIds);
-  }, [selectedProducts, products]);
 
   const productSortOptions = [
     { label: "Best selling", value: "" },
@@ -56,6 +48,8 @@ const CollectionsCreate = () => {
     { label: "Newest", value: "new" },
     { label: "Oldest", value: "old" },
   ];
+  const columnsOptions = columns?.map((column) => ({ label: column.name, value: column.id }));
+  const conditionsOptions = columns?.map((column) => ({ label: column.name, value: column.id }));
   const statusOptions = [
     { value: "active", label: "Active" },
     { value: "draft", label: "Draft" },
@@ -66,6 +60,42 @@ const CollectionsCreate = () => {
     setSearchTerm("");
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+
+    await post('/admin/collections', {
+      onSuccess: (result) => {
+        reset();
+        console.log(success);
+      },
+      onError: (error) => {
+        console.log("Custom error handler:", error);
+      },
+    }).then((r) => console.log("result", r));
+  };
+  const handleTypeChange = (newType) => {
+    let updatedConditions = data.conditions;
+
+    if (newType === "smart") {
+      if (!Array.isArray(data.conditions) || data.conditions.length === 0) {
+        updatedConditions = [{}];
+      }
+    } else if (newType === "manual") {
+      updatedConditions = (data.conditions || []).filter(
+          (condition) =>
+              condition &&
+              typeof condition === "object" &&
+              Object.keys(condition).length > 0 &&
+              Object.values(condition).some((val) => val !== null && val !== "")
+      );
+    }
+
+    setData("type", newType);
+    setData("conditions", updatedConditions);
+  };
+
+
   return (
     <section
       className="main-body-wrapper ml-0 p-6 transition-all duration-300 bg-[#f1f1f1] h-[100%]"
@@ -73,7 +103,7 @@ const CollectionsCreate = () => {
     >
       {/* <!-- page-starts --> */}
       <form className="collection-wrapper w-[100%] max-w-[920px] flex flex-col justify-center gap-3 mx-auto">
-        {(productsLoading || processing) && <Loader />}
+        {(productsLoading || processing || columnsLoading) && <Loader />}
         <div className="heading-sec flex items-center py-5 gap-2 justify-center">
           <div className="flex w-[100%]  max-w-[100%] justify-start gap-2">
             <Link
@@ -117,56 +147,58 @@ const CollectionsCreate = () => {
                   Collection type
                 </h5>
                 <Checkbox
-                  id={"manual"}
-                  type="radio"
-                  name={"type"}
-                  onChange={(e) => setData("type", e.target.value)}
-                  value={"manual"}
-                  checked={data.type === "manual"}
-                  labelClass={"flex flex-col align-top text-xs !text-gray-600"}
-                  label={
-                    <>
-                      <strong className="font-semibold">Manual</strong>
-                      <p>
-                        Add products to this collection one by one. Learn more
-                        about{" "}
-                        <a
-                          href="#"
-                          className="text-blue-500 hover:text-blue-600 underline"
-                        >
-                          manual collections
-                        </a>
-                        .
-                      </p>
-                    </>
-                  }
+                    id={"manual"}
+                    type="radio"
+                    name={"type"}
+                    onChange={(e) => handleTypeChange(e.target.value)}
+                    value={"manual"}
+                    checked={data.type === "manual"}
+                    labelClass={"flex flex-col align-top text-xs !text-gray-600"}
+                    label={
+                      <>
+                        <strong className="font-semibold">Manual</strong>
+                        <p>
+                          Add products to this collection one by one. Learn more
+                          about{" "}
+                          <a
+                              href="#"
+                              className="text-blue-500 hover:text-blue-600 underline"
+                          >
+                            manual collections
+                          </a>
+                          .
+                        </p>
+                      </>
+                    }
                 />
+
                 <Checkbox
-                  id={"smart"}
-                  type="radio"
-                  name={"type"}
-                  onChange={(e) => setData("type", e.target.value)}
-                  value={"smart"}
-                  checked={data.type === "smart"}
-                  labelClass={"flex flex-col align-top text-xs !text-gray-600"}
-                  label={
-                    <>
-                      <strong className="font-semibold">Smart</strong>
-                      <p>
-                        Existing and future products that match the conditions
-                        you set will automatically be added <br /> to this
-                        collection. Learn more about&nbsp;
-                        <a
-                          href="#"
-                          className="text-blue-500 hover:text-blue-600 underline"
-                        >
-                          smart collections
-                        </a>
-                        .
-                      </p>
-                    </>
-                  }
+                    id={"smart"}
+                    type="radio"
+                    name={"type"}
+                    onChange={(e) => handleTypeChange(e.target.value)}
+                    value={"smart"}
+                    checked={data.type === "smart"}
+                    labelClass={"flex flex-col align-top text-xs !text-gray-600"}
+                    label={
+                      <>
+                        <strong className="font-semibold">Smart</strong>
+                        <p>
+                          Existing and future products that match the conditions
+                          you set will automatically be added <br /> to this
+                          collection. Learn more about&nbsp;
+                          <a
+                              href="#"
+                              className="text-blue-500 hover:text-blue-600 underline"
+                          >
+                            smart collections
+                          </a>
+                          .
+                        </p>
+                      </>
+                    }
                 />
+
               </div>
             </div>
             {data.type === "manual" && (
@@ -222,7 +254,7 @@ const CollectionsCreate = () => {
                         <ul className="w-full">
                           {data.products.map((item, index) => {
                             const product = products.find((p) => p.id === item);
-                            console.log(product.status);
+                            console.log(product);
 
                             return (
                               <li
@@ -257,7 +289,7 @@ const CollectionsCreate = () => {
                                       variant="transparent"
                                       className="!text-gray-400 hover:!bg-gray-200 hover:!text-gray-600 text-sm !p-2"
                                       onClick={() =>
-                                        setSelectedProducts(
+                                        setData("products",
                                           data.products.filter(
                                             (p) => p !== item
                                           )
@@ -297,8 +329,8 @@ const CollectionsCreate = () => {
                   onHide={handleModelClose}
                   items={products}
                   options={productSortOptions}
-                  value={selectedProducts}
-                  onChange={(e) => setData("products", e)}
+                  value={data.products}
+                  onChange={(e) => setData("products", e.map((p) => p.id))}
                   search={searchTerm}
                   onSearch={(e) => setSearchTerm(e.target.value)}
                 />
@@ -336,53 +368,7 @@ const CollectionsCreate = () => {
                       onChange={(e) => setData("match", e.target.value)}
                     />
                   </div>
-                  <div className="flex flex-col justify-center items-start gap-3 pt-3">
-                    {data.conditions.map((condition, i) => (
-                      <div
-                        className="flex justify-start items-center gap-3 w-full"
-                        key={i}
-                      >
-                        <Select
-                          options={productSortOptions}
-                          wrapperClass={"w-full"}
-                        />
-                        <Select
-                          options={productSortOptions}
-                          wrapperClass={"w-full"}
-                        />
-                        <Input wrapperClass={"w-full"} />
-                        {data.conditions.length > 1 && (
-                          <Button
-                            variant="white"
-                            className={
-                              "w-fit !text-sm !text-gray-600 border border-gray-300 hover:!bg-gray-50 shadow-md"
-                            }
-                            onClick={() =>
-                              setData(
-                                "conditions",
-                                data.conditions.filter(
-                                  (_, index) => index !== i
-                                )
-                              )
-                            }
-                          >
-                            <i className="fa fa-trash"></i>
-                          </Button>
-                        )}
-                      </div>
-                    ))}
-                    <Button
-                      variant="white"
-                      className={
-                        "w-fit !text-xs !text-gray-600 border border-gray-300 hover:!bg-gray-50 shadow-md"
-                      }
-                      onClick={() =>
-                        setData("conditions", [...data.conditions, ""])
-                      }
-                    >
-                      <i className="fa fa-plus mr-2"></i> Add another condition
-                    </Button>
-                  </div>
+                  <Conditions value={data.conditions} onChange={(e) => setData("conditions", e)} columns={columns} />
                 </div>
               </div>
             )}
@@ -493,13 +479,7 @@ const CollectionsCreate = () => {
                 onChange={(e) => setData("status", e)}
                 error={errors.status}
               />
-              <button
-                type="submit"
-                className="text-white bg-gray-800 hover:bg-gray-900 font-medium rounded-lg text-sm px-5 py-2 dark:bg-gray-800
-                        dark:hover:bg-gray-700 dark:border-gray-700"
-              >
-                Save
-              </button>
+              <Button type="submit" onClick={handleSubmit}>Save</Button>
             </div>
             <div className="page-section w-[100%] bg-[#fff] px-3 py-3 border border-[#3030302d] rounded-lg">
               {/* <!-- Image Upload Section (Initially visible) --> */}
@@ -1146,13 +1126,7 @@ const CollectionsCreate = () => {
           {/* <!-- second-section --> */}
         </div>
         <div className="w-full flex justify-end mt-3">
-          <button
-            type="button"
-            className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800
-     dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
-          >
-            Save
-          </button>
+        <Button type="submit" onClick={handleSubmit}>Save</Button>
         </div>
       </form>
       {/* <!-- page-starts --> */}

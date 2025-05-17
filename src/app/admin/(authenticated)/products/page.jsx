@@ -138,15 +138,15 @@ const ProductList = () => {
                                 <div className="flex w-[100%]  max-w-[100%] justify-between">
                                     <h2 className="text-[20px] font-[700] text-[#303030]">Products</h2>
                                     <div className="buttons-sec flex gap-2">
-                                        <button className="export-button text-[12px] text-gray-900 font-[400] px-2 py-1 bg-gray-200 rounded-lg button-shadow h-[30px]">Export</button>
-                                        <button className="import-button text-[12px] text-gray-900 font-[400] px-2 py-1 bg-gray-200 rounded-lg button-shadow h-[30px]">Import</button>
+                                        <Button variant={'light'} disabled>Export</Button>
+                                        <Button variant={'light'} disabled>Import</Button>
                                         <div className="relative inline-block text-left">
-                                            <button className="h-[30px] text-[12px] text-gray-900 font-[400] px-2 py-1 bg-gray-200 rounded-lg button-shadow flex gap-1 items-center" type="button">
+                                            <Button variant={'light'} disabled>
                                                 More Actions
                                                 <svg className="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                                                     <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
                                                 </svg>
-                                            </button>
+                                            </Button>
 
                                             {/* <!-- Dropdown menu --> */}
                                             <div className=" z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700">
@@ -157,9 +157,7 @@ const ProductList = () => {
                                                 </ul>
                                             </div>
                                         </div>
-                                        <Link href={"products/create"} className="import-button text-[12px] text-white font-[400] px-2 py-1 bg-black rounded-lg button-shadow">
-                                            Add Products
-                                        </Link>
+                                        <Button type={'link'} href={"products/create"}>Add Products</Button>
                                     </div>
                                 </div>
                             </div>

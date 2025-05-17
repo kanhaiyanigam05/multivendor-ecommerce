@@ -1,7 +1,62 @@
+"use client";
 import Button from "@/admin/components/Button";
-import React from "react";
+import React, {useEffect, useState} from "react";
+import {useRouter} from "next/navigation";
+import useFetch from "@/admin/hooks/useFetch";
+import useForm from "@/admin/hooks/useForm";
+import Table from "@/admin/components/Table";
+import Loader from "@/admin/components/Loader";
 
 const CustomerList = () => {
+  const router = useRouter();
+  const {data: customers, loading, refetch} = useFetch('/admin/customers');
+  const {data, setData, errors, delete: destroy, reset, processing, success} = useForm();
+  const [rowData, setRowData] = useState([]);
+  useEffect(() => {
+    if (!customers) return;
+
+    const data = customers.map(item => ({
+      id: item.id,
+      customer: item.full_name,
+      email_varified: item.email_verified_at ? "Yes" : "No",
+      country: item.country?.name,
+      orders: 0,
+    }));
+
+    setRowData(data); // This REPLACES existing data, not appending
+  }, [loading]);
+  const [colDefs, setColDefs] = useState([
+    {field: "customer"},
+    {
+      headerName: "Email Verified",
+      field: "email_varified",
+    },
+    {field: "country"},
+    {field: "orders"},
+  ]);
+
+  const handleEdit = (e, customer) => {
+    e.preventDefault();
+    console.log("Editing:", customer);
+    router.push(`/admin/customers/${customer.id}/edit`);
+  };
+
+  const handleDelete = (e, customer) => {
+    e.preventDefault();
+    console.log("Deleting:", customer);
+    destroy(`/admin/customers/${customer.id}`, {
+      onSuccess: (result) => {
+        console.log(result);
+        refetch();
+      },
+      onError: (error) => {
+        // Perform actions when there are errors
+        console.log("Custom error handler:", error);
+      },
+    });
+
+  };
+  console.log(customers, "customers", rowData);
   return (
     <section
       className="main-body-wrapper ml-0 p-6 transition-all duration-300 bg-[#f1f1f1] h-[100%]"
@@ -9,6 +64,7 @@ const CustomerList = () => {
     >
       {/* <!-- page-starts --> */}
       <form className="collection-wrapper w-[100%] max-w-w-75 flex flex-col justify-center gap-3 mx-auto px-2">
+        {(processing || loading) && <Loader />}
         <div className="heading-sec flex items-center py-5 gap-2 justify-center">
           <div className="flex w-[100%]  max-w-[100%] justify-between">
             <h2 className="text-[20px] font-[700] text-[#303030]">Customers</h2>
@@ -43,102 +99,7 @@ const CustomerList = () => {
             <div className="page-section w-[100%] bg-[#fff]  border border-[#3030302d] rounded-lg">
               <div className="mx-auto py-2 w-full px-1">
                 <div className="overflow-x-auto">
-                  <table id="search-table" className="display w-full bg-white">
-                    <thead>
-                      <tr className="bg-gray-100">
-                        <th className="px-2 py-0 border-t border-b border-gray-200">
-                          <input
-                            type="checkbox"
-                            id="select-all"
-                            className="custom-checkbox section"
-                          />
-                        </th>
-                        <th className="px-2 py-0 text-[13px] border-t border-b border-gray-200">
-                          Customer Name
-                        </th>
-                        <th className="px-2 py-0 text-[13px] border-t border-b border-gray-200">
-                          Email Subscription
-                        </th>
-                        <th className="px-2 py-0 text-[13px] border-t border-b border-gray-200">
-                          Location
-                        </th>
-                        <th className="px-2 py-0 text-[13px] border-t border-b border-gray-200">
-                          Orders
-                        </th>
-                        <th className="px-2 py-0 text-[13px] border-t border-b border-gray-200">
-                          Amount Spent
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr className="bg-white border-t border-b border-gray-100 hover:bg-gray-100">
-                        <td className="px-2 py-0">
-                          <input
-                            type="checkbox"
-                            className="row-checkbox custom-checkbox section"
-                          />
-                        </td>
-                        <td className="px-2 py-0 text-[13px]">
-                          <span>Swati </span>
-                        </td>
-                        <td className="px-2 py-0 text-[13px]">
-                          <span className="bg-green-200 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-lg dark:bg-gray-700 dark:text-green-400 border border-green-200">
-                            Subscribed
-                          </span>
-                        </td>
-                        <td className="px-2 py-0 text-[13px]">-</td>
-                        <td className="px-2 py-0 text-[13px]">0 Orders</td>
-
-                        <td className="px-2 py-0 text-[13px]">
-                          &#8377; 20,375.00 INR{" "}
-                        </td>
-                      </tr>
-                      <tr className="bg-white border-t border-b border-gray-100 hover:bg-gray-100">
-                        <td className="px-2 py-0">
-                          <input
-                            type="checkbox"
-                            className="row-checkbox custom-checkbox section"
-                          />
-                        </td>
-                        <td className="px-2 py-0 text-[13px]">
-                          <span>Vandana Arora </span>
-                        </td>
-                        <td className="px-2 py-0 text-[13px]">
-                          <span className="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-lg dark:bg-gray-700 dark:text-green-400 border border-gray-200">
-                            Not Subscribed
-                          </span>
-                        </td>
-                        <td className="px-2 py-0 text-[13px]">-</td>
-                        <td className="px-2 py-0 text-[13px]">0 Orders</td>
-
-                        <td className="px-2 py-0 text-[13px]">
-                          &#8377; 20,375.00 INR{" "}
-                        </td>
-                      </tr>
-                      <tr className="bg-white border-t border-b border-gray-100 hover:bg-gray-100">
-                        <td className="px-2 py-0">
-                          <input
-                            type="checkbox"
-                            className="row-checkbox custom-checkbox section"
-                          />
-                        </td>
-                        <td className="px-2 py-0 text-[13px]">
-                          <span>KP </span>
-                        </td>
-                        <td className="px-2 py-0 text-[13px]">
-                          <span className="bg-blue-200 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-lg dark:bg-gray-700 dark:text-green-400 border border-gray-200">
-                            Pending
-                          </span>
-                        </td>
-                        <td className="px-2 py-0 text-[13px]">-</td>
-                        <td className="px-2 py-0 text-[13px]">0 Orders</td>
-
-                        <td className="px-2 py-0 text-[13px]">
-                          &#8377; 20,375.00 INR{" "}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                  <Table data={rowData} columns={colDefs} edit={handleEdit} destroy={handleDelete}/>
                 </div>
               </div>
             </div>

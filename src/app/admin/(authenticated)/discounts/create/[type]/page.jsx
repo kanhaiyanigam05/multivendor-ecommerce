@@ -12,50 +12,50 @@ import { generateCoupon } from "@/utils/utilities";
 import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
 import React, { useState } from "react";
+import {DiscountApplyOn, DiscountBuys, DiscountEligibility, DiscountMethod, DiscountRequirement, DiscountType, DiscountValue} from "@/utils/enums";
 
 const DiscountCreate = () => {
   const params = useParams();
   const type = params.type;
-  const allowedTypes = [
-    "amount-off-product",
-    "buy-x-get-y",
-    "amount-off-order",
-    "free-shipping",
-  ];
 
-  if (!allowedTypes.includes(type)) {
+  if (!Object.values(DiscountType).includes(type)) {
     notFound();
   }
 
   const { data, setData, post, processing, success, errors, reset } = useForm({
     type: type,
-    method: "code",
+    method: DiscountMethod.CODE,
     code: "",
     title: "",
-    discount_type: "percentage",
+    discount_type: DiscountValue.PERCENTAGE,
     amount: "",
-    applies_to: "collections",
+    applies_to: DiscountApplyOn.COLLECTIONS,
     collections: [],
     products: [],
     once_per_order: false,
-    requirement: "no-min-req",
+    requirement: DiscountRequirement.NO,
     min_amount: "",
     min_qty: "",
-    buys: "min-qty-items",
+    buys: DiscountBuys.QUANTITY,
     gets_qty: "",
-    gets_applies_to: "collections",
+    gets_applies_to: DiscountApplyOn.COLLECTIONS,
     gets_collections: [],
     gets_products: [],
-    discounted_value_type: "percentage",
+    discounted_value_type: DiscountValue.PERCENTAGE,
 
-    eligibility: "all",
-    segments: [],
+    eligibility_country: DiscountEligibility.ALL,
+    countries: [],
+    exclude_shipping_over_a_amount: false,
+    shipping_amount: "",
+
+    eligibility: DiscountEligibility.ALL,
     customers: [],
-    limit_total_uses: false,
-    total_uses: "",
-    limit_uses_per_customer: false,
+    limit_total_usage: false,
+    total_usage: "",
+    once_per_customer: false,
     start_date: "",
     start_time: "",
+    set_end_date: false,
     end_date: "",
     end_time: "",
   });
@@ -69,21 +69,21 @@ const DiscountCreate = () => {
   const discountTypeOptions = [
     {
       label: "Percentage",
-      value: "percentage",
+      value: DiscountMethod.PERCENTAGE,
     },
     {
       label: "Fixed amount",
-      value: "fixed",
+      value: DiscountMethod.FIXED,
     },
   ];
   const appliesToOptions = [
     {
       label: "Specific collections",
-      value: "collections",
+      value: DiscountApplyOn.COLLECTIONS,
     },
     {
       label: "Specific products",
-      value: "products",
+      value: DiscountApplyOn.PRODUCTS,
     },
   ];
   const productSortOptions = [
@@ -137,23 +137,23 @@ const DiscountCreate = () => {
                   <div className="mb-4 dark:border-gray-700 max-w-full w-full flex flex-col gap-4">
                     <div className="flex flex-wrap -mb-px text-sm font-medium text-center rounded-md tab-link-list max-w-full w-full">
                       <Button
-                        variant={data.method === "code" ? "light" : "white"}
+                        variant={data.method === DiscountMethod.CODE ? "light" : "white"}
                         className={"rounded-r-none"}
-                        onClick={() => setData("method", "code")}
+                        onClick={() => setData("method", DiscountMethod.CODE)}
                       >
                         Discount Code
                       </Button>
                       <Button
                         variant={
-                          data.method === "automatic" ? "light" : "white"
+                          data.method === DiscountMethod.AUTO ? "light" : "white"
                         }
                         className={"rounded-l-none"}
-                        onClick={() => setData("method", "automatic")}
+                        onClick={() => setData("method", DiscountMethod.AUTO)}
                       >
                         Automatic Discount
                       </Button>
                     </div>
-                    {data.method === "code" ? (
+                    {data.method === DiscountMethod.CODE ? (
                       <div>
                         <Input
                           labelClass={"flex items-center justify-between"}
@@ -178,7 +178,7 @@ const DiscountCreate = () => {
                           Customers must enter this code at checkout.
                         </p>
                       </div>
-                    ) : (
+                    ) :  data.method === DiscountMethod.AUTO ? (
                       <div>
                         <Input
                           labelClass={"flex items-center justify-between"}
@@ -191,12 +191,12 @@ const DiscountCreate = () => {
                           Customers will see this in their cart and at checkout.
                         </p>
                       </div>
-                    )}
+                    ) : null}
                   </div>
                 </div>
               </div>
             </div>
-            {data.type === "amount-off-product" && (
+            {data.type === DiscountType.AMOUNT_OFF_PRODUCT && (
               <>
                 {/* <!--------------=========fixed Amount========----------> */}
                 <div className="page-section w-full bg-white px-4 py-4 border border-[#3030302d] rounded-lg mx-0 my-0 mb-5">
@@ -218,7 +218,7 @@ const DiscountCreate = () => {
                         id={"discount-amount"}
                         value={data.amount}
                         onChange={(e) => setData("amount", e.target.value)}
-                        {...(data.discount_type === "percentage"
+                        {...(data.discount_type === DiscountValue.PERCENTAGE
                           ? {
                               postfix: "fa fa-percent",
                               placeholder: "0.00",
@@ -322,14 +322,14 @@ const DiscountCreate = () => {
                 {/* <!--------------=========fixed Amount========----------> */}
               </>
             )}
-            {data.type === "buy-x-get-y" && (
+            {data.type === DiscountType.BUY_X_GET_Y && (
               <>
                 {/* <!-- Section Container --> */}
                 <div className="page-section w-full bg-white px-4 py-4 border border-[#3030302d] rounded-lg mx-0 my-0 mb-5">
                   <div className="space-y-2 font-[sans-serif] max-w-full mx-auto">
                     <h6 className="text-sm text-gray-800 font-[600] block mb-3">
                       Customer{" "}
-                      {data.buys === "min-qty-items" ? "buys" : "spends"}
+                      {data.buys === DiscountBuys.QUANTITY ? "buys" : "spends"}
                     </h6>
 
                     <div className="flex flex-col gap-3">
@@ -339,8 +339,8 @@ const DiscountCreate = () => {
                         name={"buys"}
                         id={"min-qty-items"}
                         label={"Minimum quantity of items"}
-                        value={"min-qty-items"}
-                        checked={data.buys === "min-qty-items"}
+                        value={DiscountBuys.QUANTITY}
+                        checked={data.buys === DiscountBuys.QUANTITY}
                         onChange={(e) => setData("buys", e.target.value)}
                       />
                       <Checkbox
@@ -348,12 +348,12 @@ const DiscountCreate = () => {
                         name={"buys"}
                         id={"min-amount"}
                         label={"Minimum purchase amount"}
-                        value={"min-amount"}
-                        checked={data.buys === "min-amount"}
+                        value={DiscountBuys.AMOUNT}
+                        checked={data.buys === DiscountBuys.AMOUNT}
                         onChange={(e) => setData("buys", e.target.value)}
                       />
                       <div className="flex justify-center gap-3">
-                        {data.buys === "min-qty-items" && (
+                        {data.buys === DiscountBuys.QUANTITY && (
                           <Input
                             wrapperClass={"!w-1/3"}
                             label={"Quantity"}
@@ -364,7 +364,7 @@ const DiscountCreate = () => {
                             onChange={(e) => setData("min_qty", e.target.value)}
                           />
                         )}
-                        {data.buys === "min-amount" && (
+                        {data.buys === DiscountBuys.AMOUNT && (
                           <Input
                             wrapperClass={"!w-1/3"}
                             label={"Amount"}
@@ -449,13 +449,13 @@ const DiscountCreate = () => {
                         name={"discounted_value_type"}
                         id={"discounted-value-type-percentage"}
                         label={"Percentage"}
-                        value={"percentage"}
-                        checked={data.discounted_value_type === "percentage"}
+                        value={DiscountValue.PERCENTAGE}
+                        checked={data.discounted_value_type === DiscountValue.PERCENTAGE}
                         onChange={(e) =>
                           setData("discounted_value_type", e.target.value)
                         }
                       />
-                      {data.discounted_value_type === "percentage" && (
+                      {data.discounted_value_type === DiscountValue.PERCENTAGE && (
                         <Input
                           wrapperClass={"!w-1/3 ml-5"}
                           type={"text"}
@@ -473,13 +473,13 @@ const DiscountCreate = () => {
                         name={"discounted_value_type"}
                         id={"discounted-value-type-amount"}
                         label={"Amount off each"}
-                        value={"amount"}
-                        checked={data.discounted_value_type === "amount"}
+                        value={DiscountValue.FIXED}
+                        checked={data.discounted_value_type === DiscountValue.FIXED}
                         onChange={(e) =>
                           setData("discounted_value_type", e.target.value)
                         }
                       />
-                      {data.discounted_value_type === "amount" && (
+                      {data.discounted_value_type === DiscountValue.FIXED && (
                         <Input
                           wrapperClass={"!w-1/3 ml-5"}
                           id={"discounted-value-amount"}
@@ -496,8 +496,8 @@ const DiscountCreate = () => {
                         name={"discounted_value_type"}
                         id={"discounted-value-type-free"}
                         label={"Free"}
-                        value={"free"}
-                        checked={data.discounted_value_type === "free"}
+                        value={DiscountValue.FREE}
+                        checked={data.discounted_value_type === DiscountValue.FREE}
                         onChange={(e) =>
                           setData("discounted_value_type", e.target.value)
                         }
@@ -508,7 +508,7 @@ const DiscountCreate = () => {
                 {/* <!--------------=========minimum purchase========----------> */}
               </>
             )}
-            {data.type === "amount-off-order" && (
+            {data.type === DiscountType.AMOUNT_OFF_ORDER && (
               <>
                 {/* <!--------------=========fixed Amount========----------> */}
                 <div className="page-section w-full bg-white px-4 py-4 border border-[#3030302d] rounded-lg mx-0 my-0 mb-5">
@@ -530,7 +530,7 @@ const DiscountCreate = () => {
                         id={"discount-amount"}
                         value={data.amount}
                         onChange={(e) => setData("amount", e.target.value)}
-                        {...(data.discount_type === "percentage"
+                        {...(data.discount_type === DiscountValue.PERCENTAGE
                           ? {
                               postfix: "fa fa-percent",
                               placeholder: "0.00",
@@ -544,7 +544,7 @@ const DiscountCreate = () => {
               </>
             )}
 
-            {data.type === "free-shipping" && (
+            {data.type === DiscountType.FREE_SHIPPING && (
               <>
                 {/* <!-- Section Container --> */}
                 <div className="page-section w-full bg-white px-4 py-4 border border-[#3030302d] rounded-lg mx-0 my-0 mb-5">
@@ -560,24 +560,24 @@ const DiscountCreate = () => {
                         name={"countries"}
                         id={"all-countries"}
                         label={"All countries"}
-                        value={"all"}
-                        checked={data.countries_type === "all"}
+                        value={DiscountEligibility.ALL}
+                        checked={data.eligibility_country === DiscountEligibility.ALL}
                         onChange={(e) =>
-                          setData("countries_type", e.target.value)
+                          setData("eligibility_country", e.target.value)
                         }
                       />
                       <Checkbox
                         type={"radio"}
                         name={"countries"}
-                        id={"selected-countries"}
-                        label={"Selected countries"}
-                        value={"selected"}
-                        checked={data.countries_type === "selected"}
+                        id={"specific-countries"}
+                        label={"Specific countries"}
+                        value={DiscountEligibility.SPECIFIC}
+                        checked={data.eligibility_country === DiscountEligibility.SPECIFIC}
                         onChange={(e) =>
-                          setData("countries_type", e.target.value)
+                          setData("eligibility_country", e.target.value)
                         }
                       />
-                      {data.countries_type === "selected" && (
+                      {data.eligibility_country === DiscountEligibility.SPECIFIC && (
                         <div className="seacrh-product-sec">
                           <div className="flex items-center max-w-full mx-auto gap-3">
                             <Input
@@ -599,21 +599,21 @@ const DiscountCreate = () => {
                       <Checkbox
                         id={"exclude-shipping-rates"}
                         label={"Exclude shipping rates over a certain amount"}
-                        value={data.is_exclude_shipping_rates}
-                        checked={data.is_exclude_shipping_rates}
+                        value={data.exclude_shipping_over_a_amount}
+                        checked={data.exclude_shipping_over_a_amount}
                         onChange={(e) =>
-                          setData("is_exclude_shipping_rates", e.target.checked)
+                          setData("exclude_shipping_over_a_amount", e.target.checked)
                         }
                       />
-                      {data.is_exclude_shipping_rates && (
+                      {data.exclude_shipping_over_a_amount && (
                         <Input
                           wrapperClass={"!w-1/3 ml-5"}
                           id={"shipping-rate-amount"}
                           placeholder="0.00"
-                          value={data.shipping_rate_amount}
+                          value={data.shipping_amount}
                           prefix={"fa fa-dollar"}
                           onChange={(e) =>
-                            setData("shipping_rate_amount", e.target.value)
+                            setData("shipping_amount", e.target.value)
                           }
                         />
                       )}
@@ -623,7 +623,7 @@ const DiscountCreate = () => {
                 {/* <!--------------=========minimum purchase========----------> */}
               </>
             )}
-            {data.type !== "buy-x-get-y" && (
+            {data.type !== DiscountType.BUY_X_GET_Y && (
               <>
                 {/* <!--------------=========minimum purchase========----------> */}
                 {/* <!-- Section Container --> */}
@@ -639,8 +639,8 @@ const DiscountCreate = () => {
                       name={"requirement"}
                       id={"no-min-req"}
                       label={"No minimum requirements"}
-                      value={"no-min-req"}
-                      checked={data.requirement === "no-min-req"}
+                      value={DiscountRequirement.NO}
+                      checked={data.requirement === DiscountRequirement.NO}
                       onChange={(e) => setData("requirement", e.target.value)}
                     />
                     <Checkbox
@@ -648,11 +648,11 @@ const DiscountCreate = () => {
                       name={"requirement"}
                       id={"min-amount"}
                       label={"Minimum purchase amount"}
-                      value={"min-amount"}
-                      checked={data.requirement === "min-amount"}
+                      value={DiscountRequirement.AMOUNT}
+                      checked={data.requirement === DiscountRequirement.AMOUNT}
                       onChange={(e) => setData("requirement", e.target.value)}
                     />
-                    {data.requirement === "min-amount" && (
+                    {data.requirement === DiscountRequirement.AMOUNT && (
                       <div className="w-1/3 ml-5">
                         <Input
                           id={"minAmountInput"}
@@ -665,7 +665,7 @@ const DiscountCreate = () => {
                         />
                         <p className="text-xs text-gray-700 font-light pt-1">
                           Applies only to selected{" "}
-                          {data.applies_to === "products"
+                          {data.applies_to === DiscountApplyOn.PRODUCTS
                             ? "products"
                             : "collections"}
                           .
@@ -678,10 +678,10 @@ const DiscountCreate = () => {
                       id={"min-qty"}
                       label={"Minimum quantity"}
                       value={"min-qty"}
-                      checked={data.requirement === "min-qty"}
+                      checked={data.requirement === DiscountRequirement.QUANTITY}
                       onChange={(e) => setData("requirement", e.target.value)}
                     />
-                    {data.requirement === "min-qty" && (
+                    {data.requirement === DiscountRequirement.QUANTITY && (
                       <div className="w-1/3 ml-5">
                         <Input
                           type={"number"}
@@ -692,7 +692,7 @@ const DiscountCreate = () => {
                         />
                         <p className="text-xs text-gray-700 font-light pt-1">
                           Applies only to selected{" "}
-                          {data.applies_to === "products"
+                          {data.applies_to === DiscountApplyOn.PRODUCTS
                             ? "products"
                             : "collections"}
                           .
@@ -719,17 +719,8 @@ const DiscountCreate = () => {
                   name={"eligibility"}
                   id={"all-customers"}
                   label={"All customers"}
-                  value={"all"}
-                  checked={data.eligibility === "all"}
-                  onChange={(e) => setData("eligibility", e.target.value)}
-                />
-                <Checkbox
-                  type={"radio"}
-                  name={"eligibility"}
-                  id={"specific-segments"}
-                  label={"Specific customer segments"}
-                  value={"segments"}
-                  checked={data.eligibility === "segments"}
+                  value={DiscountEligibility.ALL}
+                  checked={data.eligibility === DiscountEligibility.ALL}
                   onChange={(e) => setData("eligibility", e.target.value)}
                 />
                 <Checkbox
@@ -737,17 +728,11 @@ const DiscountCreate = () => {
                   name={"eligibility"}
                   id={"specific-customers"}
                   label={"Specific customers"}
-                  value={"customers"}
-                  checked={data.eligibility === "customers"}
+                  value={DiscountEligibility.SPECIFIC}
+                  checked={data.eligibility === DiscountEligibility.SPECIFIC}
                   onChange={(e) => setData("eligibility", e.target.value)}
                 />
-                {data.eligibility === "segments" && (
-                  <div className="flex items-center max-w-full mx-auto gap-3">
-                    <Input placeholder={"Search customer segments"} />
-                    <Button variant="white">Browse</Button>
-                  </div>
-                )}
-                {data.eligibility === "customers" && (
+                {data.eligibility === DiscountEligibility.SPECIFIC && (
                   <div className="flex items-center max-w-full mx-auto gap-3">
                     <Input placeholder={"Search customers"} />
                     <Button variant="white">Browse</Button>
@@ -767,27 +752,27 @@ const DiscountCreate = () => {
                   label={
                     "Limit number of times this discount can be used in total"
                   }
-                  checked={data.limit_total_uses}
+                  checked={data.limit_total_usage}
                   onChange={(e) =>
-                    setData("limit_total_uses", e.target.checked)
+                    setData("limit_total_usage", e.target.checked)
                   }
                 />
-                {data.limit_total_uses && (
+                {data.limit_total_usage && (
                   <Input
                     wrapperClass={"!w-1/3"}
                     type="number"
-                    id={"total-uses"}
+                    id={"total-usage"}
                     placeholder={"0"}
-                    value={data.total_uses}
-                    onChange={(e) => setData("total_uses", e.target.value)}
+                    value={data.total_usage}
+                    onChange={(e) => setData("total_usage", e.target.value)}
                   />
                 )}
                 <Checkbox
-                  id={"limit-per-customer"}
+                  id={"once-per-customer"}
                   label={"Limit to one use per customer"}
-                  checked={data.limit_per_customer}
+                  checked={data.once_per_customer}
                   onChange={(e) =>
-                    setData("limit_per_customer", e.target.checked)
+                    setData("once_per_customer", e.target.checked)
                   }
                 />
               </div>

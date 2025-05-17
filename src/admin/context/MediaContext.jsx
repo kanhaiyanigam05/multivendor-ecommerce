@@ -75,6 +75,11 @@ export const Media = ({
     }
   }, [selectedMedia.multiple, data]);
   useEffect(() => {
+    if (value) {
+      setSelectedMedia({ ...selectedMedia, multiple, data: value });
+    }
+  }, [value]);
+  useEffect(() => {
     onChange(selectedMedia.data);
   }, [selectedMedia.data]);
   const [dragIndex, setDragIndex] = useState(null);
@@ -97,6 +102,7 @@ export const Media = ({
   const handleDragEnd = () => {
     setDragIndex(null);
   };
+  console.log(selectedMedia, "selectedMedia", value);
 
   return (
     <>
@@ -133,7 +139,7 @@ export const Media = ({
                 {label}
               </label>
             )}
-            {selectedMedia.data ? (
+            {(selectedMedia.data) ? (
               <div className="grid grid-cols-4 gap-2 append-images ui-sortable">
                 {Array.isArray(selectedMedia.data)
                   ? selectedMedia.data.map((id, i) => {
@@ -142,7 +148,7 @@ export const Media = ({
                       return (
                         <div
                           className={`relative group aspect-square bg-gray-50 hover:bg-gray-100 rounded-lg border border-gray-400 ${mediaWrapperClass}${
-                            i === 0 ? "col-span-2 row-span-2" : ""
+                            i === 0 ? " col-span-2 row-span-2" : ""
                           } ${
                             dragIndex === i ? "cursor-grabbing" : "cursor-grab"
                           }`}
@@ -179,6 +185,7 @@ export const Media = ({
                       const item = data.find(
                         (item) => item.id === selectedMedia.data
                       );
+                      console.log(item, "item");
 
                       return (
                         <div className={`relative group aspect-square bg-gray-50 hover:bg-gray-100 rounded-lg border border-gray-400 ${mediaWrapperClass} col-span-2 row-span-2`}>
